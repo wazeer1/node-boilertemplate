@@ -29,7 +29,7 @@ A comprehensive, production-ready Node.js boilerplate with Express.js, featuring
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/wazeer1/node-boilertemplate.git
    cd node-boiler
    ```
 
