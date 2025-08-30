@@ -1,14 +1,14 @@
 import { catchAsync } from '../middleware/error.js';
 import { roleService } from '../services/role.service.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
+import ApiResponse from '../utils/ApiResponse.js';
+import ApiError from '../utils/ApiError.js';
 
 /**
  * Get all roles
  */
 const getAllRoles = catchAsync(async (req, res) => {
   const { page, limit, search, sortBy, sortOrder } = req.query;
-  
+
   const options = {
     page: parseInt(page) || 1,
     limit: parseInt(limit) || 10,
@@ -18,7 +18,7 @@ const getAllRoles = catchAsync(async (req, res) => {
   };
 
   const result = await roleService.getAllRoles(options);
-  
+
   res.status(200).json(
     ApiResponse.paginated('Roles retrieved successfully', result.roles, {
       page: result.page,
@@ -34,7 +34,7 @@ const getAllRoles = catchAsync(async (req, res) => {
  */
 const searchRoles = catchAsync(async (req, res) => {
   const { q: searchQuery, page, limit, sortBy, sortOrder } = req.query;
-  
+
   if (!searchQuery) {
     throw ApiError.badRequest('Search query is required');
   }
@@ -47,7 +47,7 @@ const searchRoles = catchAsync(async (req, res) => {
   };
 
   const result = await roleService.searchRoles(searchQuery, options);
-  
+
   res.status(200).json(
     ApiResponse.paginated('Search results retrieved successfully', result.roles, {
       page: result.page,
@@ -64,12 +64,10 @@ const searchRoles = catchAsync(async (req, res) => {
  */
 const getRoleById = catchAsync(async (req, res) => {
   const { id } = req.params;
-  
+
   const role = await roleService.getRoleById(id);
-  
-  res.status(200).json(
-    ApiResponse.success('Role retrieved successfully', { role })
-  );
+
+  res.status(200).json(ApiResponse.success('Role retrieved successfully', { role }));
 });
 
 /**
@@ -77,12 +75,10 @@ const getRoleById = catchAsync(async (req, res) => {
  */
 const createRole = catchAsync(async (req, res) => {
   const roleData = req.body;
-  
+
   const newRole = await roleService.createRole(roleData);
-  
-  res.status(201).json(
-    ApiResponse.created('Role created successfully', { role: newRole })
-  );
+
+  res.status(201).json(ApiResponse.created('Role created successfully', { role: newRole }));
 });
 
 /**
@@ -91,12 +87,10 @@ const createRole = catchAsync(async (req, res) => {
 const updateRole = catchAsync(async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
-  
+
   const updatedRole = await roleService.updateRole(id, updateData);
-  
-  res.status(200).json(
-    ApiResponse.updated('Role updated successfully', { role: updatedRole })
-  );
+
+  res.status(200).json(ApiResponse.updated('Role updated successfully', { role: updatedRole }));
 });
 
 /**
@@ -104,12 +98,10 @@ const updateRole = catchAsync(async (req, res) => {
  */
 const deleteRole = catchAsync(async (req, res) => {
   const { id } = req.params;
-  
+
   await roleService.deleteRole(id);
-  
-  res.status(200).json(
-    ApiResponse.deleted('Role deleted successfully')
-  );
+
+  res.status(200).json(ApiResponse.deleted('Role deleted successfully'));
 });
 
 /**
@@ -118,16 +110,14 @@ const deleteRole = catchAsync(async (req, res) => {
 const updateRolePermissions = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { permissions } = req.body;
-  
+
   if (!permissions || !Array.isArray(permissions)) {
     throw ApiError.badRequest('Permissions array is required');
   }
 
   const updatedRole = await roleService.updateRolePermissions(id, permissions);
-  
-  res.status(200).json(
-    ApiResponse.updated('Role permissions updated successfully', { role: updatedRole })
-  );
+
+  res.status(200).json(ApiResponse.updated('Role permissions updated successfully', { role: updatedRole }));
 });
 
 /**
@@ -136,16 +126,14 @@ const updateRolePermissions = catchAsync(async (req, res) => {
 const addRolePermissions = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { permissions } = req.body;
-  
+
   if (!permissions || !Array.isArray(permissions)) {
     throw ApiError.badRequest('Permissions array is required');
   }
 
   const updatedRole = await roleService.addRolePermissions(id, permissions);
-  
-  res.status(200).json(
-    ApiResponse.updated('Permissions added to role successfully', { role: updatedRole })
-  );
+
+  res.status(200).json(ApiResponse.updated('Permissions added to role successfully', { role: updatedRole }));
 });
 
 /**
@@ -154,16 +142,14 @@ const addRolePermissions = catchAsync(async (req, res) => {
 const removeRolePermissions = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { permissions } = req.body;
-  
+
   if (!permissions || !Array.isArray(permissions)) {
     throw ApiError.badRequest('Permissions array is required');
   }
 
   const updatedRole = await roleService.removeRolePermissions(id, permissions);
-  
-  res.status(200).json(
-    ApiResponse.updated('Permissions removed from role successfully', { role: updatedRole })
-  );
+
+  res.status(200).json(ApiResponse.updated('Permissions removed from role successfully', { role: updatedRole }));
 });
 
 /**
@@ -171,10 +157,8 @@ const removeRolePermissions = catchAsync(async (req, res) => {
  */
 const getRoleStats = catchAsync(async (req, res) => {
   const stats = await roleService.getRoleStats();
-  
-  res.status(200).json(
-    ApiResponse.success('Role statistics retrieved successfully', { stats })
-  );
+
+  res.status(200).json(ApiResponse.success('Role statistics retrieved successfully', { stats }));
 });
 
 /**
@@ -182,10 +166,8 @@ const getRoleStats = catchAsync(async (req, res) => {
  */
 const getRoleStatsByPermission = catchAsync(async (req, res) => {
   const stats = await roleService.getRoleStatsByPermission();
-  
-  res.status(200).json(
-    ApiResponse.success('Role statistics by permission retrieved successfully', { stats })
-  );
+
+  res.status(200).json(ApiResponse.success('Role statistics by permission retrieved successfully', { stats }));
 });
 
 /**
@@ -194,16 +176,14 @@ const getRoleStatsByPermission = catchAsync(async (req, res) => {
 const assignRole = catchAsync(async (req, res) => {
   const { id: roleId } = req.params;
   const { userId } = req.body;
-  
+
   if (!userId) {
     throw ApiError.badRequest('User ID is required');
   }
 
   await roleService.assignRole(roleId, userId);
-  
-  res.status(200).json(
-    ApiResponse.success('Role assigned successfully')
-  );
+
+  res.status(200).json(ApiResponse.success('Role assigned successfully'));
 });
 
 /**
@@ -212,16 +192,14 @@ const assignRole = catchAsync(async (req, res) => {
 const unassignRole = catchAsync(async (req, res) => {
   const { id: roleId } = req.params;
   const { userId } = req.body;
-  
+
   if (!userId) {
     throw ApiError.badRequest('User ID is required');
   }
 
   await roleService.unassignRole(roleId, userId);
-  
-  res.status(200).json(
-    ApiResponse.success('Role unassigned successfully')
-  );
+
+  res.status(200).json(ApiResponse.success('Role unassigned successfully'));
 });
 
 export const roleController = {

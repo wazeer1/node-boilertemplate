@@ -18,7 +18,7 @@ const createTransporter = () => {
       }
     });
   }
-  
+
   // For production, use real SMTP
   return nodemailer.createTransporter({
     host: config.email.host,
@@ -37,7 +37,7 @@ const createTransporter = () => {
 const sendEmail = async (to, subject, html, text = null) => {
   try {
     const transporter = createTransporter();
-    
+
     const mailOptions = {
       from: config.email.from,
       to,
@@ -45,14 +45,14 @@ const sendEmail = async (to, subject, html, text = null) => {
       html,
       text: text || html.replace(/<[^>]*>/g, '') // Strip HTML tags for text version
     };
-    
+
     const info = await transporter.sendMail(mailOptions);
-    
+
     logger.info(`Email sent successfully to ${to}`, {
       messageId: info.messageId,
       subject
     });
-    
+
     return info;
   } catch (error) {
     logger.error('Failed to send email', {
@@ -69,7 +69,7 @@ const sendEmail = async (to, subject, html, text = null) => {
  */
 const sendVerificationEmail = async (email, token) => {
   const verificationUrl = `${config.cors.origin}/verify-email?token=${token}`;
-  
+
   const subject = 'Verify Your Email Address';
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -96,7 +96,7 @@ const sendVerificationEmail = async (email, token) => {
       </p>
     </div>
   `;
-  
+
   return sendEmail(email, subject, html);
 };
 
@@ -105,7 +105,7 @@ const sendVerificationEmail = async (email, token) => {
  */
 const sendPasswordResetEmail = async (email, token) => {
   const resetUrl = `${config.cors.origin}/reset-password?token=${token}`;
-  
+
   const subject = 'Reset Your Password';
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -132,7 +132,7 @@ const sendPasswordResetEmail = async (email, token) => {
       </p>
     </div>
   `;
-  
+
   return sendEmail(email, subject, html);
 };
 
@@ -164,7 +164,7 @@ const sendWelcomeEmail = async (email, firstName) => {
       </p>
     </div>
   `;
-  
+
   return sendEmail(email, subject, html);
 };
 
@@ -192,14 +192,14 @@ const sendAccountDeletionEmail = async (email, firstName) => {
       </p>
     </div>
   `;
-  
+
   return sendEmail(email, subject, html);
 };
 
 /**
  * Send security alert email
  */
-const sendSecurityAlertEmail = async (email, firstName, action, location = 'Unknown') {
+const sendSecurityAlertEmail = async (email, firstName, action, location = 'Unknown') => {
   const subject = 'Security Alert - Account Activity';
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -229,7 +229,7 @@ const sendSecurityAlertEmail = async (email, firstName, action, location = 'Unkn
       </p>
     </div>
   `;
-  
+
   return sendEmail(email, subject, html);
 };
 
@@ -240,7 +240,7 @@ const testEmailConfig = async () => {
   try {
     const transporter = createTransporter();
     await transporter.verify();
-    
+
     logger.info('Email configuration is valid');
     return true;
   } catch (error) {
